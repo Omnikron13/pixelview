@@ -2,6 +2,7 @@ package pixelview
 
 import (
     "os"
+    "io"
     "fmt"
     "image"
     "image/color"
@@ -14,8 +15,12 @@ func FromFile(filename string) (encoded string, err error) {
     if err != nil {
         return
     }
+    return FromReader(io.Reader(f))
+}
 
-    img, _, err := image.Decode(f)
+
+func FromReader(reader io.Reader) (encoded string, err error) {
+    img, _, err := image.Decode(reader)
     if err != nil {
         return
     }
