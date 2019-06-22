@@ -42,6 +42,22 @@ func FromImage(img image.Image) (encoded string, err error) {
                 encoded += "▀"
                 continue
             }
+            if fg == prevfg {
+                encoded += fmt.Sprintf(
+                    "[:%s]▀",
+                    hexColour(bg),
+                )
+                prevbg = bg
+                continue
+            }
+            if bg == prevbg {
+                encoded += fmt.Sprintf(
+                    "[%s:]▀",
+                    hexColour(fg),
+                )
+                prevfg = fg
+                continue
+            }
             encoded += fmt.Sprintf(
                 "[%s:%s]▀",
                 hexColour(fg),
