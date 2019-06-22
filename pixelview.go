@@ -24,7 +24,11 @@ func FromReader(reader io.Reader) (encoded string, err error) {
     if err != nil {
         return
     }
+    return FromImage(img)
+}
 
+
+func FromImage(img image.Image) (encoded string, err error) {
     if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
         errors.New("pixelview: Can't process image with uneven height")
     }
