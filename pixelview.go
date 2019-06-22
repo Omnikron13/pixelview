@@ -34,12 +34,21 @@ func FromImage(img image.Image) (encoded string, err error) {
     }
 
     for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y += 2 {
+        var prevfg, prevbg color.Color
         for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
+            fg := img.At(x, y)
+            bg := img.At(x, y + 1)
+            if fg == prevfg && bg == prevbg {
+                encoded += "▀"
+                continue
+            }
             encoded += fmt.Sprintf(
                 "[%s:%s]▀",
-                hexColour(img.At(x, y)),
-                hexColour(img.At(x, y + 1)),
+                hexColour(fg),
+                hexColour(bg),
             )
+            prevfg = fg
+            prevbg = bg
         }
         encoded += "\n"
     }
