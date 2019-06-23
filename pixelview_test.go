@@ -2,11 +2,16 @@ package pixelview
 
 import (
     "testing"
+    "flag"
     "os"
+    "path/filepath"
     "io/ioutil"
     "image"
     _ "image/png"
 )
+
+
+var update = flag.Bool("update", false, "update .golden files")
 
 
 func TestFromFile(t *testing.T) {
@@ -35,7 +40,8 @@ func TestFromFile(t *testing.T) {
 
 
 func TestFromImageGeneric(t *testing.T) {
-    buf, err := ioutil.ReadFile("pixelview.raw")
+    golden := filepath.Join("testdata", t.Name()+".golden")
+    buf, err := ioutil.ReadFile(golden)
     if err != nil {
         panic(err)
     }
@@ -56,11 +62,15 @@ func TestFromImageGeneric(t *testing.T) {
     if s != reference {
         t.Error("Output did not match reference")
     }
+    if *update {
+        ioutil.WriteFile(golden, []byte(s), 0644)
+    }
 }
 
 
 func TestFromPaletted(t *testing.T) {
-    buf, err := ioutil.ReadFile("pixelview.raw")
+    golden := filepath.Join("testdata", t.Name()+".golden")
+    buf, err := ioutil.ReadFile(golden)
     if err != nil {
         panic(err)
     }
@@ -84,6 +94,9 @@ func TestFromPaletted(t *testing.T) {
     }
     if s != reference {
         t.Error("Output did not match reference")
+    }
+    if *update {
+        ioutil.WriteFile(golden, []byte(s), 0644)
     }
 }
 
