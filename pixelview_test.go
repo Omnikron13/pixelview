@@ -120,7 +120,7 @@ func BenchmarkFromPaletted(b *testing.B) {
         panic("Type assertion failed")
     }
     for n := 0; n < b.N; n++ {
-        fromImageGeneric(paletted)
+        FromPaletted(paletted)
     }
 }
 
