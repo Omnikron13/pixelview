@@ -22,7 +22,7 @@ func TestFromImageGeneric(t *testing.T) {
     }
     reference := string(buf)
 
-    f, err := os.Open("pixelview.png")
+    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
         panic(err)
     }
@@ -51,7 +51,7 @@ func TestFromPaletted(t *testing.T) {
     }
     reference := string(buf)
 
-    f, err := os.Open("pixelview.png")
+    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
         panic(err)
     }
@@ -80,7 +80,7 @@ func TestFromPaletted(t *testing.T) {
 
 
 func BenchmarkFromImageGeneric(b *testing.B) {
-    f, err := os.Open("pixelview.png")
+    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
         panic(err)
     }
@@ -95,7 +95,7 @@ func BenchmarkFromImageGeneric(b *testing.B) {
 
 
 func BenchmarkFromPaletted(b *testing.B) {
-    f, err := os.Open("pixelview.png")
+    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
         panic(err)
     }
