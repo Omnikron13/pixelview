@@ -32,6 +32,11 @@ func FromReader(reader io.Reader) (encoded string, err error) {
 
 
 func FromImage(img image.Image) (encoded string, err error) {
+    if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
+        err = errors.New("pixelview: Can't process image with uneven height")
+        return
+    }
+
     switch v := img.(type) {
     default:
         return fromImageGeneric(img)
@@ -42,11 +47,6 @@ func FromImage(img image.Image) (encoded string, err error) {
 
 
 func fromImageGeneric(img image.Image) (encoded string, err error) {
-    if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
-        err = errors.New("pixelview: Can't process image with uneven height")
-        return
-    }
-
     for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y += 2 {
         var prevfg, prevbg color.Color
         for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
@@ -64,11 +64,6 @@ func fromImageGeneric(img image.Image) (encoded string, err error) {
 // It is automatically used when applicable by FromImage(), so you should
 // have no need to bother with it manually.
 func fromPaletted(img *image.Paletted) (encoded string, err error) {
-    if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
-        err = errors.New("pixelview: Can't process image with uneven height")
-        return
-    }
-
     for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y += 2 {
         var prevfg, prevbg color.Color
         for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
