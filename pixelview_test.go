@@ -2,7 +2,9 @@ package pixelview
 
 import (
     "testing"
+    "os"
     "io/ioutil"
+    "image"
     _ "image/png"
 )
 
@@ -31,5 +33,40 @@ func TestFromFile(t *testing.T) {
     }
 }
 
+
 // TODO: test FromReader() & FromImage() (especially things like sub-images?)
+
+
+func BenchmarkFromImageGeneric(b *testing.B) {
+    f, err := os.Open("pixelview.png")
+    if err != nil {
+        panic(err)
+    }
+    img, _, err := image.Decode(f)
+    if err != nil {
+        panic(err)
+    }
+    for n := 0; n < b.N; n++ {
+        fromImageGeneric(img)
+    }
+}
+
+
+func BenchmarkFromPaletted(b *testing.B) {
+    f, err := os.Open("pixelview.png")
+    if err != nil {
+        panic(err)
+    }
+    img, _, err := image.Decode(f)
+    if err != nil {
+        panic(err)
+    }
+    paletted, ok := img.(*image.Paletted)
+    if !ok {
+        panic("Type assertion failed")
+    }
+    for n := 0; n < b.N; n++ {
+        fromImageGeneric(paletted)
+    }
+}
 
