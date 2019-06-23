@@ -15,6 +15,7 @@ func FromFile(filename string) (encoded string, err error) {
     if err != nil {
         return
     }
+    defer f.Close()
     return FromReader(io.Reader(f))
 }
 
