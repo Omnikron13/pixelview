@@ -34,6 +34,60 @@ func TestFromFile(t *testing.T) {
 }
 
 
+func TestFromImageGeneric(t *testing.T) {
+    buf, err := ioutil.ReadFile("pixelview.raw")
+    if err != nil {
+        panic(err)
+    }
+    reference := string(buf)
+
+    f, err := os.Open("pixelview.png")
+    if err != nil {
+        panic(err)
+    }
+    img, _, err := image.Decode(f)
+    if err != nil {
+        panic(err)
+    }
+    s, err := fromImageGeneric(img)
+    if err != nil {
+        t.Errorf("Error encountered during execution: %s", err)
+    }
+    if s != reference {
+        t.Error("Output did not match reference")
+    }
+}
+
+
+func TestFromPaletted(t *testing.T) {
+    buf, err := ioutil.ReadFile("pixelview.raw")
+    if err != nil {
+        panic(err)
+    }
+    reference := string(buf)
+
+    f, err := os.Open("pixelview.png")
+    if err != nil {
+        panic(err)
+    }
+    img, _, err := image.Decode(f)
+    if err != nil {
+        panic(err)
+    }
+    paletted, ok := img.(*image.Paletted)
+    if !ok {
+        panic("Type assertion failed before test could be run")
+    }
+    s, err := FromPaletted(paletted)
+    if err != nil {
+        t.Errorf("Error encountered during execution: %s", err)
+    }
+    if s != reference {
+        t.Error("Output did not match reference")
+    }
+}
+
+
 // TODO: test FromReader() & FromImage() (especially things like sub-images?)
 
 
