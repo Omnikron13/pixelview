@@ -39,6 +39,8 @@ func FromReader(reader io.Reader) (encoded string, err error) {
 // It takes an image.Image and converts it to a string formatted for tview.
 // The unicode half-block character (▀) with a fg & bg colour set will represent
 // pixels in the returned string.
+// Because each character represents two pixels, it is not possible to convert an
+// image if its height is uneven. Attempts to do so will return an error.
 func FromImage(img image.Image) (encoded string, err error) {
     if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
         err = errors.New("pixelview: Can't process image with uneven height")
