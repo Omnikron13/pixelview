@@ -80,16 +80,38 @@ func FromPaletted(img *image.Paletted) (encoded string, err error) {
     }
 
     for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y += 2 {
+        var prevfg, prevbg color.Color
         for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
             i := (y - img.Rect.Min.Y) * img.Stride + (x - img.Rect.Min.X)
-            fg := img.Pix[i]
-            bg := img.Pix[i + img.Stride]
-            // TODO: RLE
+            fg := img.Palette[img.Pix[i]]
+            bg := img.Palette[img.Pix[i + img.Stride]]
+            if fg == prevfg && bg == prevbg {
+                encoded += "▀"
+                continue
+            }
+            if fg == prevfg {
+                encoded += fmt.Sprintf(
+                    "[:%s]▀",
+                    hexColour(bg),
+                )
+                prevbg = bg
+                continue
+            }
+            if bg == prevbg {
+                encoded += fmt.Sprintf(
+                    "[%s:]▀",
+                    hexColour(fg),
+                )
+                prevfg = fg
+                continue
+            }
             encoded += fmt.Sprintf(
                 "[%s:%s]▀",
-                hexColour(img.Palette[fg]),
-                hexColour(img.Palette[bg]),
+                hexColour(fg),
+                hexColour(bg),
             )
+            prevfg = fg
+            prevbg = bg
         }
         encoded += "\n"
     }
