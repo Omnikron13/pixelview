@@ -12,6 +12,7 @@ import (
 )
 
 
+// FromFile is a convenience function that converts a file on disk to a formatted string.
 func FromFile(filename string) (encoded string, err error) {
     f, err := os.Open(filename)
     if err != nil {
@@ -22,6 +23,7 @@ func FromFile(filename string) (encoded string, err error) {
 }
 
 
+// FromReader is a convenience function that converts an io.Reader to a formatted string.
 func FromReader(reader io.Reader) (encoded string, err error) {
     img, _, err := image.Decode(reader)
     if err != nil {
@@ -31,6 +33,10 @@ func FromReader(reader io.Reader) (encoded string, err error) {
 }
 
 
+// FromImage is the primary function of this package,
+// It takes an image.Image and converts it to a string formatted for tview.
+// The unicode half-block character (▀) with a fg & bg colour set will represent
+// pixels in the returned string.
 func FromImage(img image.Image) (encoded string, err error) {
     if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
         err = errors.New("pixelview: Can't process image with uneven height")
