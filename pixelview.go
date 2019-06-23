@@ -29,6 +29,16 @@ func FromReader(reader io.Reader) (encoded string, err error) {
 
 
 func FromImage(img image.Image) (encoded string, err error) {
+    switch v := img.(type) {
+    default:
+        return fromImageGeneric(img)
+    case *image.Paletted:
+        return FromPaletted(v)
+    }
+}
+
+
+func fromImageGeneric(img image.Image) (encoded string, err error) {
     if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
         err = errors.New("pixelview: Can't process image with uneven height")
         return
