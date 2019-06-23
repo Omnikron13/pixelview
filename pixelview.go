@@ -34,7 +34,7 @@ func FromImage(img image.Image) (encoded string, err error) {
     default:
         return fromImageGeneric(img)
     case *image.Paletted:
-        return FromPaletted(v)
+        return fromPaletted(v)
     }
 }
 
@@ -58,10 +58,10 @@ func fromImageGeneric(img image.Image) (encoded string, err error) {
 }
 
 
-// FromPaletted saves a few μs when working with paletted images.
+// fromPaletted saves a few μs when working with paletted images.
 // It is automatically used when applicable by FromImage(), so you should
 // have no need to bother with it manually.
-func FromPaletted(img *image.Paletted) (encoded string, err error) {
+func fromPaletted(img *image.Paletted) (encoded string, err error) {
     if (img.Bounds().Max.Y - img.Bounds().Min.Y) % 2 != 0 {
         err = errors.New("pixelview: Can't process image with uneven height")
         return

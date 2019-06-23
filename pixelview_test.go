@@ -63,7 +63,7 @@ func TestFromPaletted(t *testing.T) {
     if !ok {
         panic("Type assertion failed before test could be run")
     }
-    s, err := FromPaletted(paletted)
+    s, err := fromPaletted(paletted)
     if err != nil {
         t.Errorf("Error encountered during execution: %s", err)
     }
@@ -108,7 +108,7 @@ func BenchmarkFromPaletted(b *testing.B) {
         panic("Type assertion failed")
     }
     for n := 0; n < b.N; n++ {
-        FromPaletted(paletted)
+        fromPaletted(paletted)
     }
 }
 
