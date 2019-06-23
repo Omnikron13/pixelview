@@ -133,6 +133,40 @@ func FromPaletted(img *image.Paletted) (encoded string, err error) {
 }
 
 
+// encode converts a fg & bg colour into a formatted pair of 'pixels',
+// using the prevfg & prevbg colours to perform something akin to run-length encoding
+func encode(fg, bg color.Color, prevfg, prevbg *color.Color) (encoded string) {
+    if fg == *prevfg && bg == *prevbg {
+        encoded = "▀"
+        return
+    }
+    if fg == *prevfg {
+        encoded = fmt.Sprintf(
+            "[:%s]▀",
+            hexColour(bg),
+        )
+        *prevbg = bg
+        return
+    }
+    if bg == *prevbg {
+        encoded = fmt.Sprintf(
+            "[%s:]▀",
+            hexColour(fg),
+        )
+        *prevfg = fg
+        return
+    }
+    encoded = fmt.Sprintf(
+        "[%s:%s]▀",
+        hexColour(fg),
+        hexColour(bg),
+    )
+    *prevfg = fg
+    *prevbg = bg
+    return
+}
+
+
 func hexColour(c color.Color) string {
     r, g, b, _ := c.RGBA()
     return fmt.Sprintf("#%.2x%.2x%.2x", r >> 8, g >> 8, b >> 8)
