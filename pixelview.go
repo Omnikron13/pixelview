@@ -13,6 +13,7 @@ import (
 
 
 // FromFile is a convenience function that converts a file on disk to a formatted string.
+// See FromImage() for more details.
 func FromFile(filename string) (encoded string, err error) {
     f, err := os.Open(filename)
     if err != nil {
@@ -24,6 +25,7 @@ func FromFile(filename string) (encoded string, err error) {
 
 
 // FromReader is a convenience function that converts an io.Reader to a formatted string.
+// See FromImage() for more details.
 func FromReader(reader io.Reader) (encoded string, err error) {
     img, _, err := image.Decode(reader)
     if err != nil {
