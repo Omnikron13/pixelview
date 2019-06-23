@@ -50,33 +50,7 @@ func fromImageGeneric(img image.Image) (encoded string, err error) {
         for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
             fg := img.At(x, y)
             bg := img.At(x, y + 1)
-            if fg == prevfg && bg == prevbg {
-                encoded += "▀"
-                continue
-            }
-            if fg == prevfg {
-                encoded += fmt.Sprintf(
-                    "[:%s]▀",
-                    hexColour(bg),
-                )
-                prevbg = bg
-                continue
-            }
-            if bg == prevbg {
-                encoded += fmt.Sprintf(
-                    "[%s:]▀",
-                    hexColour(fg),
-                )
-                prevfg = fg
-                continue
-            }
-            encoded += fmt.Sprintf(
-                "[%s:%s]▀",
-                hexColour(fg),
-                hexColour(bg),
-            )
-            prevfg = fg
-            prevbg = bg
+            encoded += encode(fg, bg, &prevfg, &prevbg)
         }
         encoded += "\n"
     }
@@ -99,33 +73,7 @@ func FromPaletted(img *image.Paletted) (encoded string, err error) {
             i := (y - img.Rect.Min.Y) * img.Stride + (x - img.Rect.Min.X)
             fg := img.Palette[img.Pix[i]]
             bg := img.Palette[img.Pix[i + img.Stride]]
-            if fg == prevfg && bg == prevbg {
-                encoded += "▀"
-                continue
-            }
-            if fg == prevfg {
-                encoded += fmt.Sprintf(
-                    "[:%s]▀",
-                    hexColour(bg),
-                )
-                prevbg = bg
-                continue
-            }
-            if bg == prevbg {
-                encoded += fmt.Sprintf(
-                    "[%s:]▀",
-                    hexColour(fg),
-                )
-                prevfg = fg
-                continue
-            }
-            encoded += fmt.Sprintf(
-                "[%s:%s]▀",
-                hexColour(fg),
-                hexColour(bg),
-            )
-            prevfg = fg
-            prevbg = bg
+            encoded += encode(fg, bg, &prevfg, &prevbg)
         }
         encoded += "\n"
     }
