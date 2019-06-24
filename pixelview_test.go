@@ -7,6 +7,7 @@ import (
     "path/filepath"
     "io/ioutil"
     "image"
+    "image/color"
     _ "image/png"
 )
 
@@ -73,6 +74,55 @@ func TestFromPaletted(t *testing.T) {
     if *update {
         ioutil.WriteFile(golden, []byte(s), 0644)
     }
+}
+
+
+func TestEncode(t *testing.T) {
+    var prevfg, prevbg color.Color
+    fg := &color.RGBA {
+        R: 0x12,
+        G: 0x34,
+        B: 0x56,
+    }
+    bg := &color.RGBA {
+        R: 0xAB,
+        G: 0xCD,
+        B: 0xEF,
+    }
+
+    t.Run("No RLE", func(t *testing.T) {
+        ref := "[#123456:#abcdef]▀"
+        s := encode(fg, bg, &prevfg, &prevbg)
+        if s != ref {
+            t.Errorf("Output (%s) did not match reference (%s)", s, ref)
+        }
+    })
+
+    t.Run("Full RLE", func(t *testing.T) {
+        ref := "▀"
+        s := encode(fg, bg, &prevfg, &prevbg)
+        if s != ref {
+            t.Errorf("Output (%s) did not match reference (%s)", s, ref)
+        }
+    })
+
+    t.Run("FG RLE", func(t *testing.T) {
+        ref := "[:#abcdef]▀"
+        prevbg = nil
+        s := encode(fg, bg, &prevfg, &prevbg)
+        if s != ref {
+            t.Errorf("Output (%s) did not match reference (%s)", s, ref)
+        }
+    })
+
+    t.Run("BG RLE", func(t *testing.T) {
+        ref := "[#123456:]▀"
+        prevfg = nil
+        s := encode(fg, bg, &prevfg, &prevbg)
+        if s != ref {
+            t.Errorf("Output (%s) did not match reference (%s)", s, ref)
+        }
+    })
 }
 
 
