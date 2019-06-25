@@ -73,8 +73,7 @@ func fromImageGeneric(img image.Image) (encoded string, err error) {
 
 
 // fromPaletted saves a few μs when working with paletted images.
-// It is automatically used when applicable by FromImage(), so you should
-// have no need to bother with it manually.
+// These are what PNG8 images are decoded as.
 func fromPaletted(img *image.Paletted) (encoded string, err error) {
     for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y += 2 {
         var prevfg, prevbg color.Color
