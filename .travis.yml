@@ -4,6 +4,11 @@ go:
 - 1.12
 - master
 
+os:
+- linux
+- osx
+- windows
+
 before_install:
 - go get github.com/mattn/goveralls
 
