@@ -19,20 +19,31 @@ var update = flag.Bool("update", false, "update .golden files")
 // below are the actual logic, and that FromFile() is an incredibly light
 // convenience function.
 func TestFromFile(t *testing.T) {
+    // And this seems even more pointless as it is essentially
+    // testing if os.Open() works, but without this test apparently
+    // there is missing code coverage...
+    t.Run("Missing File", func(t *testing.T) {
+        _, err := FromFile(filepath.Join("testdata", "404.png"))
+        if err == nil {
+            t.Error("Didn't error on non-existent file")
+        }
+    })
+
     golden, reference := getGolden(t)
+    t.Run("Output", func(t *testing.T) {
+        s, err := FromFile(filepath.Join("testdata", "pixelview.png"))
+        if err != nil {
+            panic(err)
+        }
 
-    s, err := FromFile(filepath.Join("testdata", "pixelview.png"))
-    if err != nil {
-        panic(err)
-    }
+        if s != reference {
+            t.Error("Output did not match reference")
+        }
 
-    if s != reference {
-        t.Error("Output did not match reference")
-    }
-
-    if *update {
-        ioutil.WriteFile(golden, []byte(s), 0644)
-    }
+        if *update {
+            ioutil.WriteFile(golden, []byte(s), 0644)
+        }
+    })
 }
 
 
