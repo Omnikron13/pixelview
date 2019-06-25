@@ -58,6 +58,8 @@ func FromImage(img image.Image) (encoded string, err error) {
 }
 
 
+// fromImageGeneric is the fallback function for processing images.
+// It will be used for more exotic image formats than png or gif.
 func fromImageGeneric(img image.Image) (encoded string, err error) {
     for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y += 2 {
         var prevfg, prevbg color.Color
