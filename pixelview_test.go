@@ -44,6 +44,7 @@ func TestFromFile(t *testing.T) {
 
 func TestFromImageGeneric(t *testing.T) {
     golden := filepath.Join("testdata", t.Name()+".golden")
+
     buf, err := ioutil.ReadFile(golden)
     if err != nil {
         t.Error("Golden file could not be read")
@@ -65,6 +66,7 @@ func TestFromImageGeneric(t *testing.T) {
     if s != reference {
         t.Error("Output did not match reference")
     }
+
     if *update {
         ioutil.WriteFile(golden, []byte(s), 0644)
     }
@@ -99,6 +101,7 @@ func TestFromPaletted(t *testing.T) {
     if s != reference {
         t.Error("Output did not match reference")
     }
+
     if *update {
         ioutil.WriteFile(golden, []byte(s), 0644)
     }
