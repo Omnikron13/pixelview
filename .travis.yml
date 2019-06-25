@@ -11,9 +11,9 @@ os:
 
 env: GO111MODULE=on GOFLAGS='-mod vendor'
 
-before_script:
-- go install github.com/mattn/goveralls
+before_install:
+- go get github.com/mattn/goveralls
 
 script:
-- goveralls -service=travis-ci
+- $GOPATH/bin/goveralls -service=travis-ci
 
