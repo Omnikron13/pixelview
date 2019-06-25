@@ -52,6 +52,8 @@ func FromImage(img image.Image) (encoded string, err error) {
         return fromImageGeneric(img)
     case *image.Paletted:
         return fromPaletted(v)
+    case *image.NRGBA:
+        return fromNRGBA(v)
     }
 }
 
