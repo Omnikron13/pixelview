@@ -105,6 +105,36 @@ func TestFromPaletted(t *testing.T) {
 }
 
 
+func TestFromNRGBA(t *testing.T) {
+    golden, reference := getGolden(t)
+
+    f, err := os.Open(filepath.Join("testdata", "nrgba.png"))
+    if err != nil {
+        panic(err)
+    }
+    img, _, err := image.Decode(f)
+    if err != nil {
+        panic(err)
+    }
+    nrgba, ok := img.(*image.NRGBA)
+    if !ok {
+        panic("Type assertion failed before test could be run")
+    }
+
+    s, err := fromNRGBA(nrgba)
+    if err != nil {
+        t.Errorf("Error encountered during execution: %s", err)
+    }
+    if s != reference {
+        t.Error("Output did not match reference")
+    }
+
+    if *update {
+        ioutil.WriteFile(golden, []byte(s), 0644)
+    }
+}
+
+
 func TestEncode(t *testing.T) {
     var prevfg, prevbg color.Color
     fg := &color.RGBA {
