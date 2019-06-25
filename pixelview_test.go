@@ -53,6 +53,14 @@ func TestFromFile(t *testing.T) {
             }
         })
     }
+
+    // For the coverage gods
+    t.Run("Uneven", func(t *testing.T) {
+        _, err := FromFile(filepath.Join("testdata", "uneven.png"))
+        if err == nil {
+            t.Error("Didn't error when given uneven height image")
+        }
+    })
 }
 
 
