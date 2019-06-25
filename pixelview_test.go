@@ -30,21 +30,29 @@ func TestFromFile(t *testing.T) {
         }
     })
 
-    _, reference, golden := getTestData(t, "pixelview.png")
-    t.Run("Output", func(t *testing.T) {
-        s, err := FromFile(filepath.Join("testdata", "pixelview.png"))
-        if err != nil {
-            panic(err)
-        }
+    tests := []string{
+        "paletted.png",
+        "nrgba.png",
+        "ycbcr.jpg",
+        "cmyk.jpg",
+    }
+    for _, s := range tests {
+        _, reference, golden := getTestData(t, s)
+        t.Run("Output:"+s, func(t *testing.T) {
+            s, err := FromFile(filepath.Join("testdata", s))
+            if err != nil {
+                panic(err)
+            }
 
-        if s != reference {
-            t.Error("Output did not match reference")
-        }
+            if s != reference {
+                t.Error("Output did not match reference")
+            }
 
-        if *update {
-            ioutil.WriteFile(golden, []byte(s), 0644)
-        }
-    })
+            if *update {
+                ioutil.WriteFile(golden, []byte(s), 0644)
+            }
+        })
+    }
 }
 
 
