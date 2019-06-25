@@ -9,6 +9,7 @@ import (
     "image"
     "image/color"
     _ "image/png"
+    _ "image/jpeg"
 )
 
 
@@ -183,6 +184,8 @@ func BenchmarkFromImageGeneric(b *testing.B) {
     benchmarks := []string{
         "paletted.png",
         "nrgba.png",
+        "ycbcr.jpg",
+        "cmyk.jpg",
     }
     for _, s := range benchmarks {
         b.Run(s, func(b *testing.B) {
