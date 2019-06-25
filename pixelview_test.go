@@ -173,16 +173,24 @@ func getGolden(t *testing.T) (golden, reference string) {
 
 
 func BenchmarkFromImageGeneric(b *testing.B) {
-    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
-    if err != nil {
-        panic(err)
+    benchmarks := []string{
+        "paletted.png",
+        "nrgba.png",
     }
-    img, _, err := image.Decode(f)
-    if err != nil {
-        panic(err)
-    }
-    for n := 0; n < b.N; n++ {
-        fromImageGeneric(img)
+    for _, s := range benchmarks {
+        b.Run(s, func(b *testing.B) {
+            f, err := os.Open(filepath.Join("testdata", s))
+            if err != nil {
+                panic(err)
+            }
+            img, _, err := image.Decode(f)
+            if err != nil {
+                panic(err)
+            }
+            for n := 0; n < b.N; n++ {
+                fromImageGeneric(img)
+            }
+        })
     }
 }
 
