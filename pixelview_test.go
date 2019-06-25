@@ -38,6 +38,13 @@ func TestFromFile(t *testing.T) {
         }
     })
 
+    t.Run("Not an image", func(t *testing.T) {
+        _, err := FromFile(filepath.Join("testdata", "notanimage"))
+        if err == nil {
+            t.Error("Didn't error when given something other than an image")
+        }
+    })
+
     tests := []string{
         "paletted.png",
         "nrgba.png",
