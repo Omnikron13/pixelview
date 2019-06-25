@@ -209,14 +209,7 @@ func BenchmarkFromImageGeneric(b *testing.B) {
     }
     for _, s := range benchmarks {
         b.Run(s, func(b *testing.B) {
-            f, err := os.Open(filepath.Join("testdata", s))
-            if err != nil {
-                panic(err)
-            }
-            img, _, err := image.Decode(f)
-            if err != nil {
-                panic(err)
-            }
+            img := loadTestImage(b, s)
             for n := 0; n < b.N; n++ {
                 fromImageGeneric(img)
             }
@@ -226,14 +219,7 @@ func BenchmarkFromImageGeneric(b *testing.B) {
 
 
 func BenchmarkFromPaletted(b *testing.B) {
-    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
-    if err != nil {
-        panic(err)
-    }
-    img, _, err := image.Decode(f)
-    if err != nil {
-        panic(err)
-    }
+    img := loadTestImage(b, "paletted.png")
     paletted, ok := img.(*image.Paletted)
     if !ok {
         panic("Type assertion failed")
@@ -245,14 +231,7 @@ func BenchmarkFromPaletted(b *testing.B) {
 
 
 func BenchmarkFromNRGBA(b *testing.B) {
-    f, err := os.Open(filepath.Join("testdata", "nrgba.png"))
-    if err != nil {
-        panic(err)
-    }
-    img, _, err := image.Decode(f)
-    if err != nil {
-        panic(err)
-    }
+    img := loadTestImage(b, "nrgba.png")
     nrgba, ok := img.(*image.NRGBA)
     if !ok {
         panic("Type assertion failed")
