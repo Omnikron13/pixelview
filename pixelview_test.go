@@ -29,7 +29,7 @@ func TestFromFile(t *testing.T) {
         }
     })
 
-    golden, reference := getGolden(t)
+    _, reference, golden := getTestData(t, "pixelview.png")
     t.Run("Output", func(t *testing.T) {
         s, err := FromFile(filepath.Join("testdata", "pixelview.png"))
         if err != nil {
@@ -53,9 +53,8 @@ func TestFromFile(t *testing.T) {
 // functions for all types would be onerous.
 func TestFromImageGeneric(t *testing.T) {
     // TODO: split into subtests
-    golden, reference := getGolden(t)
+    img, reference, golden := getTestData(t, "paletted.png")
 
-    img := loadTestImage(t, "paletted.png")
     s, err := fromImageGeneric(img)
     if err != nil {
         t.Errorf("Error encountered during execution: %s", err)
@@ -71,9 +70,8 @@ func TestFromImageGeneric(t *testing.T) {
 
 
 func TestFromPaletted(t *testing.T) {
-    golden, reference := getGolden(t)
+    img, reference, golden := getTestData(t, "paletted.png")
 
-    img := loadTestImage(t, "paletted.png")
     paletted, ok := img.(*image.Paletted)
     if !ok {
         panic("Type assertion failed before test could be run")
@@ -93,9 +91,8 @@ func TestFromPaletted(t *testing.T) {
 
 
 func TestFromNRGBA(t *testing.T) {
-    golden, reference := getGolden(t)
+    img, reference, golden := getTestData(t, "nrgba.png")
 
-    img := loadTestImage(t, "nrgba.png")
     nrgba, ok := img.(*image.NRGBA)
     if !ok {
         panic("Type assertion failed before test could be run")
