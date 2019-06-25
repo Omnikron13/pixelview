@@ -54,14 +54,7 @@ func TestFromFile(t *testing.T) {
 func TestFromImageGeneric(t *testing.T) {
     golden, reference := getGolden(t)
 
-    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
-    if err != nil {
-        panic(err)
-    }
-    img, _, err := image.Decode(f)
-    if err != nil {
-        panic(err)
-    }
+    img := loadTestImage(t, "paletted.png")
     s, err := fromImageGeneric(img)
     if err != nil {
         t.Errorf("Error encountered during execution: %s", err)
@@ -79,14 +72,7 @@ func TestFromImageGeneric(t *testing.T) {
 func TestFromPaletted(t *testing.T) {
     golden, reference := getGolden(t)
 
-    f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
-    if err != nil {
-        panic(err)
-    }
-    img, _, err := image.Decode(f)
-    if err != nil {
-        panic(err)
-    }
+    img := loadTestImage(t, "paletted.png")
     paletted, ok := img.(*image.Paletted)
     if !ok {
         panic("Type assertion failed before test could be run")
@@ -108,14 +94,7 @@ func TestFromPaletted(t *testing.T) {
 func TestFromNRGBA(t *testing.T) {
     golden, reference := getGolden(t)
 
-    f, err := os.Open(filepath.Join("testdata", "nrgba.png"))
-    if err != nil {
-        panic(err)
-    }
-    img, _, err := image.Decode(f)
-    if err != nil {
-        panic(err)
-    }
+    img := loadTestImage(t, "nrgba.png")
     nrgba, ok := img.(*image.NRGBA)
     if !ok {
         panic("Type assertion failed before test could be run")
