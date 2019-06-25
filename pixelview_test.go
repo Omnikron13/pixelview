@@ -52,6 +52,7 @@ func TestFromFile(t *testing.T) {
 // It obviously needs to work properly still though, as implementing specific
 // functions for all types would be onerous.
 func TestFromImageGeneric(t *testing.T) {
+    // TODO: split into subtests
     golden, reference := getGolden(t)
 
     img := loadTestImage(t, "paletted.png")
