@@ -161,21 +161,6 @@ func TestEncode(t *testing.T) {
 }
 
 
-// This helper function loads golden files into strings for comparison
-// and also returns the (relative) path to them, which is required if
-// -update is passed to go test so new versions can be written.
-func getGolden(t *testing.T) (golden, reference string) {
-    golden = filepath.Join("testdata", t.Name()+".golden")
-
-    buf, err := ioutil.ReadFile(golden)
-    if err != nil {
-        t.Error("Golden file could not be read")
-    }
-    reference = string(buf)
-    return
-}
-
-
 // This helper function loads test images and their corresponding .golden files
 // and also returns the (relative) path to the golden file, which is required if
 // -update is passed to go test so new versions can be written.
