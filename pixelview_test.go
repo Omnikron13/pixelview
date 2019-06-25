@@ -42,6 +42,10 @@ func TestFromFile(t *testing.T) {
 }
 
 
+// Ideally fromImageGeneric() shouldn't ever be called, as more efficient
+// and specific functions can process the common specific types of images.
+// It obviously needs to work properly still though, as implementing specific
+// functions for all types would be onerous.
 func TestFromImageGeneric(t *testing.T) {
     golden := filepath.Join("testdata", t.Name()+".golden")
 
