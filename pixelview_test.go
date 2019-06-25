@@ -262,3 +262,16 @@ func BenchmarkFromNRGBA(b *testing.B) {
     }
 }
 
+
+func loadTestImage(tb testing.TB, filename string) (img image.Image) {
+    f, err := os.Open(filepath.Join("testdata", filename))
+    if err != nil {
+        tb.Fatal("Test image could not be opened")
+    }
+    img, _, err = image.Decode(f)
+    if err != nil {
+        tb.Fatal("Test image could not be decoded")
+    }
+    return
+}
+
