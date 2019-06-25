@@ -88,6 +88,24 @@ func fromPaletted(img *image.Paletted) (encoded string, err error) {
 }
 
 
+// fromNRGBA saves a handful of μs when working with NRGBA images.
+// These are what PNG24 images are decoded as.
+func fromNRGBA(img *image.NRGBA) (encoded string, err error) {
+    for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y += 2 {
+        var prevfg, prevbg color.Color
+        for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
+            i := (y - img.Rect.Min.Y) * img.Stride + (x - img.Rect.Min.X) * 4
+            fg := color.NRGBA{img.Pix[i], img.Pix[i+1], img.Pix[i+2], img.Pix[i+3]}
+            i += img.Stride
+            bg := color.NRGBA{img.Pix[i], img.Pix[i+1], img.Pix[i+2], img.Pix[i+3]}
+            encoded += encode(fg, bg, &prevfg, &prevbg)
+        }
+        encoded += "\n"
+    }
+    return
+}
+
+
 // encode converts a fg & bg colour into a formatted pair of 'pixels',
 // using the prevfg & prevbg colours to perform something akin to run-length encoding
 func encode(fg, bg color.Color, prevfg, prevbg *color.Color) (encoded string) {
