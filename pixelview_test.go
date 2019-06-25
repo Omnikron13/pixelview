@@ -19,13 +19,7 @@ var update = flag.Bool("update", false, "update .golden files")
 // below are the actual logic, and that FromFile() is an incredibly light
 // convenience function.
 func TestFromFile(t *testing.T) {
-    golden := filepath.Join("testdata", t.Name()+".golden")
-
-    buf, err := ioutil.ReadFile(golden)
-    if err != nil {
-        t.Error("Golden file could not be read")
-    }
-    reference := string(buf)
+    golden, reference := getGolden(t)
 
     s, err := FromFile(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
@@ -47,13 +41,7 @@ func TestFromFile(t *testing.T) {
 // It obviously needs to work properly still though, as implementing specific
 // functions for all types would be onerous.
 func TestFromImageGeneric(t *testing.T) {
-    golden := filepath.Join("testdata", t.Name()+".golden")
-
-    buf, err := ioutil.ReadFile(golden)
-    if err != nil {
-        t.Error("Golden file could not be read")
-    }
-    reference := string(buf)
+    golden, reference := getGolden(t)
 
     f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
@@ -78,13 +66,7 @@ func TestFromImageGeneric(t *testing.T) {
 
 
 func TestFromPaletted(t *testing.T) {
-    golden := filepath.Join("testdata", t.Name()+".golden")
-
-    buf, err := ioutil.ReadFile(golden)
-    if err != nil {
-        t.Error("Golden file could not be read")
-    }
-    reference := string(buf)
+    golden, reference := getGolden(t)
 
     f, err := os.Open(filepath.Join("testdata", "pixelview.png"))
     if err != nil {
@@ -158,6 +140,21 @@ func TestEncode(t *testing.T) {
             t.Errorf("Output (%s) did not match reference (%s)", s, ref)
         }
     })
+}
+
+
+// This helper function loads golden files into strings for comparison
+// and also returns the (relative) path to them, which is required if
+// -update is passed to go test so new versions can be written.
+func getGolden(t *testing.T) (golden, reference string) {
+    golden = filepath.Join("testdata", t.Name()+".golden")
+
+    buf, err := ioutil.ReadFile(golden)
+    if err != nil {
+        t.Error("Golden file could not be read")
+    }
+    reference = string(buf)
+    return
 }
 
 
