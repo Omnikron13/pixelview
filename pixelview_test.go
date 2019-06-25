@@ -243,3 +243,22 @@ func BenchmarkFromPaletted(b *testing.B) {
     }
 }
 
+
+func BenchmarkFromNRGBA(b *testing.B) {
+    f, err := os.Open(filepath.Join("testdata", "nrgba.png"))
+    if err != nil {
+        panic(err)
+    }
+    img, _, err := image.Decode(f)
+    if err != nil {
+        panic(err)
+    }
+    nrgba, ok := img.(*image.NRGBA)
+    if !ok {
+        panic("Type assertion failed")
+    }
+    for n := 0; n < b.N; n++ {
+        fromNRGBA(nrgba)
+    }
+}
+
