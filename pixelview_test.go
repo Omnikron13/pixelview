@@ -179,6 +179,21 @@ func getGolden(t *testing.T) (golden, reference string) {
 }
 
 
+// This helper function loads test images and their corresponding .golden files
+// and also returns the (relative) path to the golden file, which is required if
+// -update is passed to go test so new versions can be written.
+func getTestData(t *testing.T, filename string) (img image.Image, reference, golden string) {
+    img = loadTestImage(t, filename)
+    golden = filepath.Join("testdata", filename+".golden")
+    buf, err := ioutil.ReadFile(golden)
+    if err != nil {
+        t.Error("Golden file could not be read")
+    }
+    reference = string(buf)
+    return
+}
+
+
 // TODO: test FromReader() & FromImage() (especially things like sub-images?)
 
 
