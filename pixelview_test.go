@@ -15,6 +15,33 @@ import (
 var update = flag.Bool("update", false, "update .golden files")
 
 
+// This test is actually pretty pointless, given that the specific tests
+// below are the actual logic, and that FromFile() is an incredibly light
+// convenience function.
+func TestFromFile(t *testing.T) {
+    golden := filepath.Join("testdata", t.Name()+".golden")
+
+    buf, err := ioutil.ReadFile(golden)
+    if err != nil {
+        t.Error("Golden file could not be read")
+    }
+    reference := string(buf)
+
+    s, err := FromFile(filepath.Join("testdata", "pixelview.png"))
+    if err != nil {
+        panic(err)
+    }
+
+    if s != reference {
+        t.Error("Output did not match reference")
+    }
+
+    if *update {
+        ioutil.WriteFile(golden, []byte(s), 0644)
+    }
+}
+
+
 func TestFromImageGeneric(t *testing.T) {
     golden := filepath.Join("testdata", t.Name()+".golden")
     buf, err := ioutil.ReadFile(golden)
