@@ -1,4 +1,4 @@
-// pixelview is a simple package which converts images to text formatted for tview.
+// Package pixelview is a simple package which converts images to text formatted for tview.
 // It uses coloured unicode half-block characters (▀) to represent pixels.
 package pixelview
 
