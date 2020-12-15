@@ -16,6 +16,7 @@ before_install:
 - go get github.com/mattn/goveralls
 
 script:
+- if [ "$TRAVIS_OS_NAME" = "windows" ]; then  go test -v  ; fi
 - $GOPATH/bin/goveralls -service=travis-ci
 
 matrix:
