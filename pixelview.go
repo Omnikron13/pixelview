@@ -8,6 +8,7 @@ import (
     "fmt"
     "image"
     "image/color"
+    "strings"
     "github.com/pkg/errors"
 )
 
@@ -61,15 +62,17 @@ func FromImage(img image.Image) (encoded string, err error) {
 // fromImageGeneric is the fallback function for processing images.
 // It will be used for more exotic image formats than png or gif.
 func fromImageGeneric(img image.Image) (encoded string, err error) {
+    var sb strings.Builder
     for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y += 2 {
         var prevfg, prevbg color.Color
         for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
             fg := img.At(x, y)
             bg := img.At(x, y + 1)
-            encoded += encode(fg, bg, &prevfg, &prevbg)
+            encode(fg, bg, &prevfg, &prevbg, &sb)
         }
-        encoded += "\n"
+        sb.WriteRune('\n')
     }
+    encoded = sb.String()
     return
 }
 
@@ -77,16 +80,18 @@ func fromImageGeneric(img image.Image) (encoded string, err error) {
 // fromPaletted saves a few μs when working with paletted images.
 // These are what PNG8 images are decoded as.
 func fromPaletted(img *image.Paletted) (encoded string, err error) {
+    var sb strings.Builder
     for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y += 2 {
         var prevfg, prevbg color.Color
         for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
             i := (y - img.Rect.Min.Y) * img.Stride + (x - img.Rect.Min.X)
             fg := img.Palette[img.Pix[i]]
             bg := img.Palette[img.Pix[i + img.Stride]]
-            encoded += encode(fg, bg, &prevfg, &prevbg)
+            encode(fg, bg, &prevfg, &prevbg, &sb)
         }
-        encoded += "\n"
+        sb.WriteRune('\n')
     }
+    encoded = sb.String()
     return
 }
 
@@ -94,6 +99,7 @@ func fromPaletted(img *image.Paletted) (encoded string, err error) {
 // fromNRGBA saves a handful of μs when working with NRGBA images.
 // These are what PNG24 images are decoded as.
 func fromNRGBA(img *image.NRGBA) (encoded string, err error) {
+    var sb strings.Builder
     for y := img.Rect.Min.Y; y < img.Rect.Max.Y; y += 2 {
         var prevfg, prevbg color.Color
         for x := img.Rect.Min.X; x < img.Rect.Max.X; x++ {
@@ -101,42 +107,43 @@ func fromNRGBA(img *image.NRGBA) (encoded string, err error) {
             fg := color.NRGBA{img.Pix[i], img.Pix[i+1], img.Pix[i+2], img.Pix[i+3]}
             i += img.Stride
             bg := color.NRGBA{img.Pix[i], img.Pix[i+1], img.Pix[i+2], img.Pix[i+3]}
-            encoded += encode(fg, bg, &prevfg, &prevbg)
+            encode(fg, bg, &prevfg, &prevbg, &sb)
         }
-        encoded += "\n"
+        sb.WriteRune('\n')
     }
+    encoded = sb.String()
     return
 }
 
 
 // encode converts a fg & bg colour into a formatted pair of 'pixels',
 // using the prevfg & prevbg colours to perform something akin to run-length encoding
-func encode(fg, bg color.Color, prevfg, prevbg *color.Color) (encoded string) {
+func encode(fg, bg color.Color, prevfg, prevbg *color.Color, sb *strings.Builder) {
     if fg == *prevfg && bg == *prevbg {
-        encoded = "▀"
+        sb.WriteRune('▀')
         return
     }
     if fg == *prevfg {
-        encoded = fmt.Sprintf(
+        sb.WriteString(fmt.Sprintf(
             "[:%s]▀",
             hexColour(bg),
-        )
+        ))
         *prevbg = bg
         return
     }
     if bg == *prevbg {
-        encoded = fmt.Sprintf(
+        sb.WriteString(fmt.Sprintf(
             "[%s:]▀",
             hexColour(fg),
-        )
+        ))
         *prevfg = fg
         return
     }
-    encoded = fmt.Sprintf(
+    sb.WriteString(fmt.Sprintf(
         "[%s:%s]▀",
         hexColour(fg),
         hexColour(bg),
-    )
+    ))
     *prevfg = fg
     *prevbg = bg
     return

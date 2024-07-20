@@ -10,6 +10,7 @@ import (
     "image/color"
     _ "image/png"
     _ "image/jpeg"
+    "strings"
 )
 
 
@@ -150,34 +151,42 @@ func TestEncode(t *testing.T) {
     }
 
     t.Run("No RLE", func(t *testing.T) {
+        var sb strings.Builder
         ref := "[#123456:#abcdef]▀"
-        s := encode(fg, bg, &prevfg, &prevbg)
+        encode(fg, bg, &prevfg, &prevbg, &sb)
+        s := sb.String()
         if s != ref {
             t.Errorf("Output (%s) did not match reference (%s)", s, ref)
         }
     })
 
     t.Run("Full RLE", func(t *testing.T) {
+        var sb strings.Builder
         ref := "▀"
-        s := encode(fg, bg, &prevfg, &prevbg)
+        encode(fg, bg, &prevfg, &prevbg, &sb)
+        s := sb.String()
         if s != ref {
             t.Errorf("Output (%s) did not match reference (%s)", s, ref)
         }
     })
 
     t.Run("FG RLE", func(t *testing.T) {
+        var sb strings.Builder
         ref := "[:#abcdef]▀"
         prevbg = nil
-        s := encode(fg, bg, &prevfg, &prevbg)
+        encode(fg, bg, &prevfg, &prevbg, &sb)
+        s := sb.String()
         if s != ref {
             t.Errorf("Output (%s) did not match reference (%s)", s, ref)
         }
     })
 
     t.Run("BG RLE", func(t *testing.T) {
+        var sb strings.Builder
         ref := "[#123456:]▀"
         prevfg = nil
-        s := encode(fg, bg, &prevfg, &prevbg)
+        encode(fg, bg, &prevfg, &prevbg, &sb)
+        s := sb.String()
         if s != ref {
             t.Errorf("Output (%s) did not match reference (%s)", s, ref)
         }
