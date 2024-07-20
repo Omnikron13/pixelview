@@ -5,7 +5,6 @@ import (
     "flag"
     "os"
     "path/filepath"
-    "io/ioutil"
     "image"
     "image/color"
     _ "image/png"
@@ -65,7 +64,7 @@ func TestFromFile(t *testing.T) {
             }
 
             if *update {
-                ioutil.WriteFile(golden, []byte(s), 0644)
+                os.WriteFile(golden, []byte(s), 0644)
             }
         })
     }
@@ -89,7 +88,7 @@ func TestFromImageGeneric(t *testing.T) {
     }
 
     if *update {
-        ioutil.WriteFile(golden, []byte(s), 0644)
+        os.WriteFile(golden, []byte(s), 0644)
     }
 }
 
@@ -110,7 +109,7 @@ func TestFromPaletted(t *testing.T) {
     }
 
     if *update {
-        ioutil.WriteFile(golden, []byte(s), 0644)
+        os.WriteFile(golden, []byte(s), 0644)
     }
 }
 
@@ -132,7 +131,7 @@ func TestFromNRGBA(t *testing.T) {
     }
 
     if *update {
-        ioutil.WriteFile(golden, []byte(s), 0644)
+       os.WriteFile(golden, []byte(s), 0644)
     }
 }
 
@@ -200,7 +199,7 @@ func TestEncode(t *testing.T) {
 func getTestData(t *testing.T, filename string) (img image.Image, reference, golden string) {
     img = loadTestImage(t, filename)
     golden = filepath.Join("testdata", filename+".golden")
-    buf, err := ioutil.ReadFile(golden)
+    buf, err := os.ReadFile(golden)
     if err != nil {
         t.Error("Golden file could not be read")
     }
